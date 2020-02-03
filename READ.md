@@ -1,1 +1,0 @@
-### Pipeline 2 for modeling and deploying to AWS lambada service
