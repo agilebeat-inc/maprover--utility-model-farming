@@ -39,7 +39,7 @@ def TemplateMatch(templates, img, threshold):
         
         loc = np.where(res >= thresh)
         if (len(loc[0]) == 0):
-            pass
+            n_th_template += 1
         else:
             break
         
