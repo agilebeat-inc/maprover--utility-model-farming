@@ -37,7 +37,7 @@ print(device_lib.list_local_devices())
 #
 #  - epochs: an epoch is one learning cycle where the learner sees the whole training data set
 #  - batch_size: the number of images that will be propagated through the network 
-#  - trained_model: HDF5(.h5) file name that will save best model's parameters
+
 
 
 
@@ -52,8 +52,9 @@ test_neg_dir = 'test_not_quarry'
 
 epochs = 50
 batch_size = 16
-trained_model = 'quarry00.h5'
 
+
+trained_model = 'keras.h5'
 
 num_train_pos = len([file for file in os.listdir(os.path.join(train_data_dir, train_pos_dir))])
 num_train_others = len([file for file in os.listdir(os.path.join(train_data_dir, train_neg_dir))])
