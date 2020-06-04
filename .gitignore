@@ -1,0 +1,6 @@
+### Data files or folders
+color-based-model/dataset-color-based.zip
+color-based-model/dataset-color-based/**
+
+### python
+color-based-model/__pycache__/**
