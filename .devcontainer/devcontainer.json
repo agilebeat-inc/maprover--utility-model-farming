@@ -1,5 +1,5 @@
 {
-    "name": "anaconda-tensorflow2-gpu",
+    "name": "maprover--utility-model-farming",
     "dockerFile": "Dockerfile",
     
     // Use 'settings' to set *default* container specific settings.json values on container create. 
