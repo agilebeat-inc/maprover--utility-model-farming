@@ -19,19 +19,24 @@ def color_dist(dir_pos, descending=True):
     """
     tiles = [os.path.join((dir_pos), file)  for file in os.listdir(dir_pos)]
     
-    color_vals = []   
+    color_vals = []  
+    valid_img = 0 
     for img in tiles:
-        pic = cv2.imread(img)
-        pic = cv2.cvtColor(pic, cv2.COLOR_BGR2RGB)
+        try:
+            pic = cv2.imread(img)
+            pic_RGBArr = cv2.cvtColor(pic_RGBArr, cv2.COLOR_BGR2RGB)
+            
+            reshaped_pic = np.reshape(pic_RGBArr, (pic_RGBArr.shape[0]*pic_RGBArr.shape[1], 3))
+            reshaped_pic = reshaped_pic.tolist()
+            
+            RGBs = [(pixel[0], pixel[1], pixel[2]) for pixel in reshaped_pic]
+            HEXs = ['%02x%02x%02x' % rgb for rgb in RGBs]
+            color_vals = color_vals + list(set(HEXs))
+            valid_img += 1
+        except:
+            continue
         
-        reshaped_pic = np.reshape(pic, (pic.shape[0]*pic.shape[1], 3))
-        reshaped_pic = reshaped_pic.tolist()
-        
-        RGBs = [(pixel[0], pixel[1], pixel[2]) for pixel in reshaped_pic]
-        HEXs = ['%02x%02x%02x' % rgb for rgb in RGBs]
-        color_vals = color_vals + list(set(HEXs))
-        
-    total_n_images = len(tiles)
+    total_n_images = valid_img
     Freq = collections.Counter(color_vals)
     Freq = {k: v for k, v in sorted(Freq.items(), 
                                     reverse=descending, key=lambda item: item[1])}
