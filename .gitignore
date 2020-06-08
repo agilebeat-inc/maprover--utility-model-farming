@@ -1,6 +1,8 @@
 ### Data files or folders
 color-based-model/dataset-color-based.zip
 color-based-model/dataset-color-based/**
+color-based-model/tiles
 
 ### python
-color-based-model/__pycache__/**
+color-based-model/__pycache__/**tiles
+*.DS_Store
