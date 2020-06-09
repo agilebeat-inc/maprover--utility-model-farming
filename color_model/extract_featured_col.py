@@ -58,7 +58,7 @@ def hex_to_rgb(HEXs_Freq, n_most_rgb=10):
         lv = len(value)
         rgb = tuple(int(value[i:i+lv//3], 16) for i in range(0, lv, lv//3))
         rgb_list = rgb_list + [(rgb, freq, pct)]
-    return rgb_list    
+    return rgb_list
 
 
 def dominant_color_set(rgb_list, n_most = 1, rgb_buffers=(5, 5, 5)):
