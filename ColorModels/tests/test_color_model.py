@@ -4,7 +4,8 @@ parentdir = os.path.dirname(currentdir)
 sys.path.insert(0,parentdir) 
 
 import unittest
-import color_model as cm
+from ColorModel import BasicColorModel
+import tempfile
 #from color_model import extract_featured_col as efc
 
 class TestColorModel(unittest.TestCase):
@@ -13,20 +14,34 @@ class TestColorModel(unittest.TestCase):
     
     def test_model(self):
         rgb_model = [194, 204, 194, 204, 175, 185]
-        color_model = cm.ColorModel(rgb_model)
-        class_res = color_model.classify_feature_image_b64(self.tile_construction)
+        cm = BasicColorModel(rgb_model)
+        class_res = cm.classify_feature_image_b64(self.tile_construction)
         self.assertEqual('positive', class_res)
 
     def test_model(self):
         rgb_model = [194, 204, 194, 204, 175, 185]
-        class_res = cm.classify_feature_image_b64(self.tile_runway, rgb_model)
+        cm = BasicColorModel(rgb_model)
+        class_res = cm.classify_feature_image_b64(self.tile_construction)
         self.assertEqual('negative', class_res)
 
     def test_model(self):
         rgb_model = [194, 204, 194, 204, 175, 185]
-        color_model = cm.ColorModel(rgb_model)
-        print(color_model.toJson())
+        cm = BasicColorModel(rgb_model)
+        class_res = cm.classify_feature_image_b64(self.tile_construction)
 
+    def test_model_persistance(self):
+        rgb_model = [194, 204, 194, 204, 175, 185]
+        cm = BasicColorModel(rgb_model)
+        outfile_path = tempfile.mkstemp()[1]
+        try:
+            cm.save(outfile_path)
+            loaded_cm = BasicColorModel.load(outfile_path)
+        finally:
+            os.remove(outfile_path)
+        self.assertEqual(cm, loaded_cm)
+
+    def test_load_model(self):
+        pass
 
 
 if __name__ == '__main__' and __package__ is None:

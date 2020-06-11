@@ -1,2 +1,0 @@
-
-from ColorModel import ColorModel
