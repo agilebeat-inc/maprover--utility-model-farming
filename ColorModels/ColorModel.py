@@ -4,6 +4,9 @@ import base64
 import io
 import json
 import time
+import os
+import collections
+from .Iterator import FSIterator
 
 
 class BasicColorModel:
@@ -48,13 +51,13 @@ class BasicColorModel:
         pic_RGB = cv2.cvtColor(img_cv2, cv2.COLOR_BGR2RGB)
         return pic_RGB  # 256x256x3
 
-    def classify_feature_image_b64(self, input_img_b64, pix_cutoff=50):
+    def predict_b64(self, input_img_b64, pix_cutoff=50):
         """
         """
         pic_RGB = self.decode_base64_to_cv2(input_img_b64)
-        return self.classify_feature_image(pic_RGB, pix_cutoff)
+        return self.predict(pic_RGB, pix_cutoff)
 
-    def classify_feature_image(self, pic_RGB, pix_cutoff=None):
+    def predict(self, pic_RGB, pix_cutoff=None):
         """
         """
         result = 'negative'
@@ -109,3 +112,71 @@ class BasicColorModel:
             self.pix_cutoff == other.pix_cutoff):
            return True
         return False
+
+@staticmethod
+def compute_color_dist(pos_dir, descending=True):
+    f_iterator = FSIterator(pos_dir, '.png')
+    
+    color_vals = []  
+    valid_img = 0 
+    for rel_root, f, f_ext, f_size in f_iterator:
+        if f_size <= 0:
+            continue
+        try:
+            pic = cv2.imread(os.path.join(rel_root, f))
+            pic_RGBArr = cv2.cvtColor(pic, cv2.COLOR_BGR2RGB)
+                
+            reshaped_pic = np.reshape(pic_RGBArr, (pic_RGBArr.shape[0]*pic_RGBArr.shape[1], 3))
+            reshaped_pic = reshaped_pic.tolist()
+                
+            RGBs = [(pixel[0], pixel[1], pixel[2]) for pixel in reshaped_pic]
+            HEXs = ['%02x%02x%02x' % rgb for rgb in RGBs]
+            color_vals = color_vals + list(set(HEXs))
+            valid_img += 1
+        except:
+            continue
+        
+    total_n_images = valid_img
+    Freq = collections.Counter(color_vals)
+    Freq = {k: v for k, v in sorted(Freq.items(), 
+                                    reverse=descending, key=lambda item: item[1])}
+    HEXs_Freq = list(Freq.items())   
+    HEXs_Freq = [(hex_code, freq, round(freq/total_n_images, 3) ) 
+                     for hex_code, freq in HEXs_Freq]
+    return HEXs_Freq 
+
+    @staticmethod
+    def hex_to_rgb(HEXs_Freq, n_most_rgb=10):
+        rgb_list = []    
+        for hex_code, freq, pct in HEXs_Freq[:n_most_rgb]:
+            value = hex_code.lstrip('#')
+            lv = len(value)
+            rgb = tuple(int(value[i:i+lv//3], 16) for i in range(0, lv, lv//3))
+            rgb_list = rgb_list + [(rgb, freq, pct)]
+        return rgb_list
+    
+    @staticmethod
+    def dominant_color_set(rgb_list, n_most = 1, rgb_buffers=(5, 5, 5)):
+        RGB_sets = [rgb for rgb, freq, prob in rgb_list[:n_most]]
+        r_buffer, g_buffer, b_buffer = rgb_buffers 
+
+        feature_colors = []
+        for rgb in RGB_sets:
+            R, G, B = rgb
+            R_max, G_max, B_max = (R + r_buffer, G + g_buffer, B + b_buffer)
+            R_min, G_min, B_min = (R - r_buffer, G - g_buffer, B - b_buffer)
+            colors = ((R_min, G_min, B_min), (R_max, G_max, B_max))
+            feature_colors.append(colors)        
+        return feature_colors
+
+    @classmethod
+    def color_set_generator(cls, dir_pos, output_file, rgb_buffers=(5,5,5)):
+        HEXs_Freq = cls.compute_color_dist(dir_pos, descending=True)
+        rgb_list = cls.hex_to_rgb(HEXs_Freq, n_most_rgb=10)
+        feature_colors = cls.dominant_color_set(rgb_list, n_most = 1, 
+                                                rgb_buffers=rgb_buffers)
+        return feature_colors
+
+    @classmethod
+    def fit(cls, iterator):
+        cls.color_set_generator()
