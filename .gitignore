@@ -8,4 +8,5 @@ color-based-model/__pycache__/**tiles
 *.DS_Store
 # Byte-compiled / optimized / DLL files
 __pycache__/
-*.py[cod]
+*.py[cod].vscode/.ropeproject/objectdb
+.vscode/.ropeproject/objectdb
