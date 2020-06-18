@@ -16,14 +16,23 @@ class TestImage(unittest.TestCase):
     def setUpFileSystemTest(self):
         pass
 
+    #@unittest.skip("use it if you need it")
     def test_load_from_b64string(self):
         img = Image.load_from_b64string(self.tile_construction)
         self.assertEqual(65536, len(img.RGBs))
     
+    #@unittest.skip("use it if you need it")
     def test_load_from_filesystem(self):
         with tempfile.NamedTemporaryFile(suffix='.png') as nt_file:
             img = base64.urlsafe_b64decode(self.tile_construction)
             nt_file.write(img)
+            img = Image.load_from_filesystem(nt_file.name)
+            self.assertEqual(65536, len(img.RGBs))
+
+    def test_save_from_filesystem(self):
+        with tempfile.NamedTemporaryFile(suffix='.png') as nt_file:
+            img_from_b64 = Image.load_from_b64string(self.tile_construction)
+            img_from_b64.save(nt_file.name)
             img = Image.load_from_filesystem(nt_file.name)
             self.assertEqual(65536, len(img.RGBs))
 

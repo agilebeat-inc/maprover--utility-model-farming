@@ -4,9 +4,14 @@ import base64
 import io
 
 class Image:
-    def __init__(self, RGBs, HEXs):
+    def __init__(self, pic, RGBs, HEXs):
+        self.pic = pic
         self.RGBs = RGBs
         self.HEXs = HEXs
+
+    def save(self, filename):
+        print(filename)
+        cv2.imwrite(filename, self.pic)
 
     @staticmethod
     def compute_representations(pic):
@@ -20,7 +25,7 @@ class Image:
     def load_from_filesystem(path):
         pic = cv2.imread(path)
         RGBs, HEXs = Image.compute_representations(pic)
-        return Image(RGBs, HEXs)
+        return Image(pic, RGBs, HEXs)
 
     @staticmethod
     def load_from_b64string(img_b64):
@@ -29,4 +34,4 @@ class Image:
         img_np = np.frombuffer(img_io.read(), dtype=np.uint8)
         pic = cv2.imdecode(img_np, cv2.IMREAD_COLOR)
         RGBs, HEXs = Image.compute_representations(pic)
-        return Image(RGBs, HEXs)
+        return Image(pic, RGBs, HEXs)

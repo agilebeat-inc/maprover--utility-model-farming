@@ -12,7 +12,7 @@ class FSIterator:
 
     def __next__(self):
         if self.index >= len(self.records):
-             raise StopIteration
+            raise StopIteration
         ret_item = self.records[self.index]
         self.index += 1
         return ret_item
@@ -20,13 +20,17 @@ class FSIterator:
     def __create_record_list(self, path, filter):
         listOfFiles = list()
         for (relpath, dirnames, filenames) in os.walk(path):
-            listOfFiles += [(relpath, file, os.path.splitext(file)[1], os.stat(os.path.join(relpath, file)).st_size)
-                            for file in filenames if filter == os.path.splitext(file)[1]]
+            listOfFiles += [
+                (os.path.basename(relpath),
+                 Image.load_from_filesystem(os.path.join(relpath, file)))
+                for file in filenames if filter == os.path.splitext(file)[1]
+            ]
         return listOfFiles
 
 
 class B64Iterator:
-    def __init__(self, b64_imglst):
+    def __init__(self, b64_imglst, class_name=None):
+        self.class_name = class_name
         self.index = 0
         self.records = self.__create_record_list(b64_imglst)
 
@@ -35,7 +39,7 @@ class B64Iterator:
 
     def __next__(self):
         if self.index >= len(self.records):
-             raise StopIteration
+            raise StopIteration
         ret_item = self.records[self.index]
         self.index += 1
         return ret_item
@@ -43,5 +47,6 @@ class B64Iterator:
     def __create_record_list(self, b64_imglst):
         listOfImages = list()
         for i_b64 in b64_imglst:
-            listOfImages.append(Image.load_from_b64string(i_b64))
+            listOfImages.append(
+                (self.class_name, Image.load_from_b64string(i_b64)))
         return listOfImages
