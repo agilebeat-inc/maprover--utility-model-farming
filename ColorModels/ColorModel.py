@@ -38,12 +38,6 @@ class BasicColorModel:
             col_count.append((col_val, num_pic))
         return col_count
 
-    def read_pixel_value(self, output_file):
-        with open(output_file, 'r+') as f:
-            col_vals = f.read().splitlines()
-        col_vals_list = [int(val) for val in col_vals]
-        return col_vals
-
     def decode_base64_to_cv2(self, img_b64):
         img = base64.urlsafe_b64decode(img_b64)
         img_io = io.BytesIO(img)
@@ -83,7 +77,6 @@ class BasicColorModel:
     def load(path):
         with open(path) as json_file:
             model_json = json.load(json_file)
-            timestamp = model_json['timestamp']
             min_R = model_json['min_R']
             max_R = model_json['max_R']
             min_G = model_json['min_G']
@@ -118,7 +111,7 @@ class BasicColorModel:
     def compute_color_dist(iterator, descending=True):    
         color_vals = []  
         valid_img = 0 
-        for c, image in iterator:
+        for _, image in iterator:
             HEXs = image.HEXs
             color_vals = color_vals + list(set(HEXs))
             valid_img += 1
