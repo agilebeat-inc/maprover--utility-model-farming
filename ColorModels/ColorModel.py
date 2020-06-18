@@ -4,9 +4,7 @@ import base64
 import io
 import json
 import time
-import os
 import collections
-from Iterator import FSIterator, B64Iterator
 from Image import Image
 
 

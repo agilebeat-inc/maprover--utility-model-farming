@@ -7,7 +7,6 @@ sys.path.insert(0, parentdir)
 import unittest
 from Image import Image
 import tempfile
-import io
 import base64
 
 

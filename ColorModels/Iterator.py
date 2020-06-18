@@ -3,8 +3,8 @@ from Image import Image
 
 
 class FSIterator:
-    def __init__(self, path, filter):
-        self.records = self.__create_record_list(path, filter)
+    def __init__(self, path, fltr):
+        self.records = self.__create_record_list(path, fltr)
         self.index = 0
 
     def __iter__(self, ):
@@ -17,15 +17,15 @@ class FSIterator:
         self.index += 1
         return ret_item
 
-    def __create_record_list(self, path, filter):
-        listOfFiles = list()
-        for (relpath, dirnames, filenames) in os.walk(path):
-            listOfFiles += [
+    def __create_record_list(self, path, fltr):
+        list_of_files = list()
+        for (relpath, _, filenames) in os.walk(path):
+            list_of_files += [
                 (os.path.basename(relpath),
                  Image.load_from_filesystem(os.path.join(relpath, file)))
-                for file in filenames if filter == os.path.splitext(file)[1]
+                for file in filenames if fltr == os.path.splitext(file)[1]
             ]
-        return listOfFiles
+        return list_of_files
 
 
 class B64Iterator:
