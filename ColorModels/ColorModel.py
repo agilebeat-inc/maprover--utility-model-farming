@@ -6,12 +6,13 @@ import json
 import time
 import os
 import collections
-from .Iterator import FSIterator
+from Iterator import FSIterator, B64Iterator
+from Image import Image
 
 
 class BasicColorModel:
     def __init__(self, rgb_list, pix_cutoff=50):
-        if not isinstance(rgb_list, list) or len(rgb_list) != 6:
+        if not (isinstance(rgb_list, list) or isinstance(rgb_list, tuple)) or len(rgb_list) != 6:
             raise ValueError(
                 'The model requires exactly six arguments in list: [min_R, max_R, min_G, max_G, min_B, max_B]')
         self.timestamp = time.time()
@@ -113,37 +114,20 @@ class BasicColorModel:
            return True
         return False
 
-@staticmethod
-def compute_color_dist(pos_dir, descending=True):
-    f_iterator = FSIterator(pos_dir, '.png')
-    
-    color_vals = []  
-    valid_img = 0 
-    for rel_root, f, f_ext, f_size in f_iterator:
-        if f_size <= 0:
-            continue
-        try:
-            pic = cv2.imread(os.path.join(rel_root, f))
-            pic_RGBArr = cv2.cvtColor(pic, cv2.COLOR_BGR2RGB)
-                
-            reshaped_pic = np.reshape(pic_RGBArr, (pic_RGBArr.shape[0]*pic_RGBArr.shape[1], 3))
-            reshaped_pic = reshaped_pic.tolist()
-                
-            RGBs = [(pixel[0], pixel[1], pixel[2]) for pixel in reshaped_pic]
-            HEXs = ['%02x%02x%02x' % rgb for rgb in RGBs]
+    @staticmethod
+    def compute_color_dist(iterator, descending=True):    
+        color_vals = []  
+        valid_img = 0 
+        for c, image in iterator:
+            HEXs = image.HEXs
             color_vals = color_vals + list(set(HEXs))
             valid_img += 1
-        except:
-            continue
-        
-    total_n_images = valid_img
-    Freq = collections.Counter(color_vals)
-    Freq = {k: v for k, v in sorted(Freq.items(), 
-                                    reverse=descending, key=lambda item: item[1])}
-    HEXs_Freq = list(Freq.items())   
-    HEXs_Freq = [(hex_code, freq, round(freq/total_n_images, 3) ) 
-                     for hex_code, freq in HEXs_Freq]
-    return HEXs_Freq 
+            
+        freq = collections.Counter(color_vals)
+        freq_sorted = sorted(freq.items(), reverse=descending, key=lambda item: item[1])
+        freq_dist = [(hex_code, freq, round(freq/valid_img, 3) ) 
+                        for hex_code, freq in freq_sorted]
+        return freq_dist 
 
     @staticmethod
     def hex_to_rgb(HEXs_Freq, n_most_rgb=10):
@@ -165,18 +149,19 @@ def compute_color_dist(pos_dir, descending=True):
             R, G, B = rgb
             R_max, G_max, B_max = (R + r_buffer, G + g_buffer, B + b_buffer)
             R_min, G_min, B_min = (R - r_buffer, G - g_buffer, B - b_buffer)
-            colors = ((R_min, G_min, B_min), (R_max, G_max, B_max))
+            colors = (R_min, G_min, B_min, R_max, G_max, B_max)
             feature_colors.append(colors)        
         return feature_colors
 
     @classmethod
-    def color_set_generator(cls, dir_pos, output_file, rgb_buffers=(5,5,5)):
-        HEXs_Freq = cls.compute_color_dist(dir_pos, descending=True)
-        rgb_list = cls.hex_to_rgb(HEXs_Freq, n_most_rgb=10)
+    def color_set_generator(cls, iterator, rgb_buffers=(5,5,5)):
+        hex_dist = cls.compute_color_dist(iterator, descending=True)
+        rgb_list = cls.hex_to_rgb(hex_dist, n_most_rgb=1)
         feature_colors = cls.dominant_color_set(rgb_list, n_most = 1, 
                                                 rgb_buffers=rgb_buffers)
         return feature_colors
 
     @classmethod
     def fit(cls, iterator):
-        cls.color_set_generator()
+        feature_colors = cls.color_set_generator(iterator)
+        return BasicColorModel(feature_colors[0])

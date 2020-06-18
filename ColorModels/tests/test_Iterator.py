@@ -30,7 +30,7 @@ class TestColorModel(unittest.TestCase):
             lst.append(i)
         self.assertEqual(2, len(lst))
 
-    @unittest.skip("demonstrating skipping") 
+    #@unittest.skip("demonstrating skipping") 
     def test_B64Iterator_NoClass(self):
         iterator = B64Iterator([self.tile_construction, self.tile_runway])
         lst = []
@@ -38,10 +38,9 @@ class TestColorModel(unittest.TestCase):
             lst.append(i)
         self.assertEqual(2, len(lst))
     
-    @unittest.skip("demonstrating skipping")
+    #@unittest.skip("demonstrating skipping")
     def test_B64Iterator_WithClassName(self):
         iterator = B64Iterator([self.tile_construction, self.tile_runway], class_name='Postivie')
-        print(iterator.class_name)
         lst = []
         for i in iterator:
             lst.append(i)

@@ -10,7 +10,6 @@ class Image:
         self.HEXs = HEXs
 
     def save(self, filename):
-        print(filename)
         cv2.imwrite(filename, self.pic)
 
     @staticmethod
