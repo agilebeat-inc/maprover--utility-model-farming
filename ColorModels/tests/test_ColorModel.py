@@ -43,9 +43,11 @@ class TestColorModel(unittest.TestCase):
 
     #@unittest.skip("demonstrating skipping") 
     def test_load_model(self):
-        iterator = B64Iterator([self.tile_construction, self.tile_runway, self.tile_runway])
-        model = BasicColorModel.fit(iterator)
-        print(model.toJson())
+        try:
+            iterator = B64Iterator([self.tile_construction, self.tile_runway, self.tile_runway])
+            model = BasicColorModel.fit(iterator)
+        except:
+            self.fail("Model creation raised Exception unexpectedly!")
 
 
 if __name__ == '__main__' and __package__ is None:
