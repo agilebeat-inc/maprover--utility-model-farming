@@ -3,6 +3,7 @@ import numpy as np
 import base64
 import io
 
+
 class Image:
     def __init__(self, pic, RGBs, HEXs):
         self.pic = pic
@@ -15,7 +16,8 @@ class Image:
     @staticmethod
     def compute_representations(pic):
         pic_RGB = cv2.cvtColor(pic, cv2.COLOR_BGR2RGB)
-        reshaped_pic = np.reshape(pic_RGB, (pic_RGB.shape[0]*pic_RGB.shape[1], 3)).tolist()
+        reshaped_pic = np.reshape(
+            pic_RGB, (pic_RGB.shape[0] * pic_RGB.shape[1], 3)).tolist()
         RGBs = [(pixel[0], pixel[1], pixel[2]) for pixel in reshaped_pic]
         HEXs = ['%02x%02x%02x' % rgb for rgb in RGBs]
         return RGBs, HEXs
