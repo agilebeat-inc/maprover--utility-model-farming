@@ -29,7 +29,7 @@ class TestColorModel(unittest.TestCase):
         class_res = cm.predict_b64(self.tile_runway)
         self.assertEqual('negative', class_res)
 
-    @unittest.skip("demonstrating skipping") 
+    #@unittest.skip("demonstrating skipping") 
     def test_model_persistance(self):
         rgb_model = [194, 204, 194, 204, 175, 185]
         cm = BasicColorModel(rgb_model)
@@ -41,11 +41,11 @@ class TestColorModel(unittest.TestCase):
             os.remove(outfile_path)
         self.assertEqual(cm, loaded_cm)
 
-    @unittest.skip("demonstrating skipping") 
+    #@unittest.skip("demonstrating skipping") 
     def test_load_model(self):
         iterator = B64Iterator([self.tile_construction, self.tile_runway, self.tile_runway])
         model = BasicColorModel.fit(iterator)
-        print(model)
+        print(model.toJson())
 
 
 if __name__ == '__main__' and __package__ is None:
