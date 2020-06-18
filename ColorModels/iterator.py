@@ -1,8 +1,20 @@
+# -*- coding: utf-8 -*-
+"""iterator allows to iterate over file structure either in memory or on file system
+
+The module provides an iterator allowing to iterate over images stored
+either in memory or on file system.
+
+"""
+
 import os
-from Image import Image
+from .image import Image
 
 
 class FSIterator:
+    """ File system iterator
+    """
+
+
     def __init__(self, path, fltr):
         self.records = self.__create_record_list(path, fltr)
         self.index = 0
@@ -29,6 +41,9 @@ class FSIterator:
 
 
 class B64Iterator:
+    """In memory image iterator where files are stored as b64
+    """
+
     def __init__(self, b64_imglst, class_name=None):
         self.class_name = class_name
         self.index = 0
@@ -45,8 +60,8 @@ class B64Iterator:
         return ret_item
 
     def __create_record_list(self, b64_imglst):
-        listOfImages = list()
+        image_list = list()
         for i_b64 in b64_imglst:
-            listOfImages.append(
+            image_list.append(
                 (self.class_name, Image.load_from_b64string(i_b64)))
-        return listOfImages
+        return image_list

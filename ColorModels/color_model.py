@@ -1,14 +1,19 @@
-import numpy as np
-import cv2
+
+
 import base64
+
+import collections
 import io
 import json
 import time
-import collections
-from Image import Image
+import cv2
+import numpy as np
 
 
 class BasicColorModel:
+    """Allows to classify tiles based on color only
+    """
+
     def __init__(self, rgb_list, pix_cutoff=50):
         if not (isinstance(rgb_list, list)
                 or isinstance(rgb_list, tuple)) or len(rgb_list) != 6:
@@ -137,10 +142,10 @@ class BasicColorModel:
 
         feature_colors = []
         for rgb in RGB_sets:
-            R, G, B = rgb
-            R_max, G_max, B_max = (R + r_buffer, G + g_buffer, B + b_buffer)
-            R_min, G_min, B_min = (R - r_buffer, G - g_buffer, B - b_buffer)
-            colors = (R_min, G_min, B_min, R_max, G_max, B_max)
+            r, g, b = rgb
+            r_max, g_max, b_max = (r + r_buffer, g + g_buffer, b + b_buffer)
+            r_min, g_min, b_min = (r - r_buffer, g - g_buffer, b - b_buffer)
+            colors = (r_min, g_min, b_min, r_max, g_max, b_max)
             feature_colors.append(colors)
         return feature_colors
 

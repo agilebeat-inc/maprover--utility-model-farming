@@ -5,8 +5,8 @@ parentdir = os.path.dirname(currentdir)
 sys.path.insert(0, parentdir)
 
 import unittest
-from Iterator import FSIterator, B64Iterator
-from Image import Image
+from iterator import FSIterator, B64Iterator
+from image import Image
 import tempfile
 import os
 
