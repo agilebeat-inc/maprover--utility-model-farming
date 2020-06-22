@@ -51,7 +51,7 @@ h5py==2.10.0
 helpdev==0.6.10
 html5lib==0.999999999
 httpie==0.9.8
-httplib2==0.9.2
+httplib2==0.18.0
 idna==2.8
 imageio==2.6.1
 imagesize==1.1.0
