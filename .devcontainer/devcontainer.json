@@ -16,7 +16,7 @@
     ],
     "runArgs": [
         "--name", "tensorflow-gpu-vsc",
-        "--gpus", "all",
+        //"--gpus", "all",
         "--rm"
     ],
     
