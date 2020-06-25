@@ -21,12 +21,12 @@ class BasicColorModel:
                 'The model requires exactly six arguments in list: [min_R, max_R, min_G, max_G, min_B, max_B]'
             )
         self.timestamp = time.time()
-        self.min_R = rgb_list[0]
-        self.max_R = rgb_list[1]
-        self.min_G = rgb_list[2]
-        self.max_G = rgb_list[3]
-        self.min_B = rgb_list[4]
-        self.max_B = rgb_list[5]
+        self.min_r = rgb_list[0]
+        self.max_r = rgb_list[1]
+        self.min_g = rgb_list[2]
+        self.max_g = rgb_list[3]
+        self.min_b = rgb_list[4]
+        self.max_b = rgb_list[5]
         self.pix_cutoff = pix_cutoff
 
     def pic_val_count(self, pic_RGB):
@@ -48,8 +48,8 @@ class BasicColorModel:
         img_io = io.BytesIO(img)
         img_np = np.frombuffer(img_io.read(), dtype=np.uint8)
         img_cv2 = cv2.imdecode(img_np, cv2.IMREAD_COLOR)
-        pic_RGB = cv2.cvtColor(img_cv2, cv2.COLOR_BGR2RGB)
-        return pic_RGB  # 256x256x3
+        pic_rgb = cv2.cvtColor(img_cv2, cv2.COLOR_BGR2RGB)
+        return pic_rgb  # 256x256x3
 
     def predict_b64(self, input_img_b64, pix_cutoff=50):
         """
@@ -68,9 +68,9 @@ class BasicColorModel:
             pc = self.pix_cutoff
 
         for pic_val, num in self.pic_val_count(pic_RGB):
-            if ((self.min_R <= pic_val[0] <= self.max_R)
-                    & (self.min_G <= pic_val[1] <= self.max_G)
-                    & (self.min_B <= pic_val[2] <= self.max_B)
+            if ((self.min_r <= pic_val[0] <= self.max_r)
+                    & (self.min_g <= pic_val[1] <= self.max_g)
+                    & (self.min_b <= pic_val[2] <= self.max_b)
                     & (num > pc)):
                 result = "positive"
         return result
@@ -82,14 +82,14 @@ class BasicColorModel:
     def load(path):
         with open(path) as json_file:
             model_json = json.load(json_file)
-            min_R = model_json['min_R']
-            max_R = model_json['max_R']
-            min_G = model_json['min_G']
-            max_G = model_json['max_G']
-            min_B = model_json['min_B']
-            max_B = model_json['max_B']
+            min_r = model_json['min_r']
+            max_r = model_json['max_r']
+            min_g = model_json['min_g']
+            max_g = model_json['max_g']
+            min_b = model_json['min_b']
+            max_b = model_json['max_b']
             pix_cutoff = model_json['pix_cutoff']
-            return BasicColorModel([min_R, max_R, min_G, max_G, min_B, max_B],
+            return BasicColorModel([min_r, max_r, min_g, max_g, min_b, max_b],
                                    pix_cutoff=pix_cutoff)
         return None
 
@@ -100,9 +100,9 @@ class BasicColorModel:
     def __eq__(self, other):
         if not other:
             return False
-        if (self.max_B == other.max_B and self.max_G == other.max_G
-                and self.max_R == other.max_R and self.min_B == other.min_B
-                and self.min_G == other.min_G and self.min_R == other.min_R
+        if (self.max_b == other.max_B and self.max_g == other.max_G
+                and self.max_r == other.max_R and self.min_b == other.min_B
+                and self.min_g == other.min_G and self.min_r == other.min_R
                 and self.pix_cutoff == other.pix_cutoff):
             return True
         return False

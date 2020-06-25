@@ -1,14 +1,15 @@
-import os, sys, inspect
-currentdir = os.path.dirname(
-    os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0, parentdir)
+# pylint: disable=missing-module-docstring
+# pylint: disable=missing-class-docstring
+# pylint: disable=missing-function-docstring
+# pylint: disable=line-too-long
+# pylint: disable=unused-variable
+# pylint: disable=bare-except
 
 import unittest
-from ColorModel import BasicColorModel
-from Image import Image
-from Iterator import B64Iterator
 import tempfile
+import os
+from color_models import BasicColorModel
+from color_models import B64Iterator
 #from color_model import extract_featured_col as efc
 
 
@@ -19,28 +20,28 @@ class TestColorModel(unittest.TestCase):
     #@unittest.skip("demonstrating skipping")
     def test_model_postive(self):
         rgb_model = [194, 204, 194, 204, 175, 185]
-        cm = BasicColorModel(rgb_model)
-        class_res = cm.predict_b64(self.tile_construction)
+        bcm = BasicColorModel(rgb_model)
+        class_res = bcm.predict_b64(self.tile_construction)
         self.assertEqual('positive', class_res)
 
     #@unittest.skip("demonstrating skipping")
     def test_model_negative(self):
         rgb_model = [194, 204, 194, 204, 175, 185]
-        cm = BasicColorModel(rgb_model)
-        class_res = cm.predict_b64(self.tile_runway)
+        bcm = BasicColorModel(rgb_model)
+        class_res = bcm.predict_b64(self.tile_runway)
         self.assertEqual('negative', class_res)
 
     #@unittest.skip("demonstrating skipping")
     def test_model_persistance(self):
         rgb_model = [194, 204, 194, 204, 175, 185]
-        cm = BasicColorModel(rgb_model)
+        bcm = BasicColorModel(rgb_model)
         outfile_path = tempfile.mkstemp()[1]
         try:
-            cm.save(outfile_path)
+            bcm.save(outfile_path)
             loaded_cm = BasicColorModel.load(outfile_path)
         finally:
             os.remove(outfile_path)
-        self.assertEqual(cm, loaded_cm)
+        self.assertEqual(bcm, loaded_cm)
 
     #@unittest.skip("demonstrating skipping")
     def test_load_model(self):

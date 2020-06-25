@@ -1,14 +1,20 @@
-import os, sys, inspect
-currentdir = os.path.dirname(
-    os.path.abspath(inspect.getfile(inspect.currentframe())))
-parentdir = os.path.dirname(currentdir)
-sys.path.insert(0, parentdir)
+# pylint: disable=missing-module-docstring
+# pylint: disable=missing-class-docstring
+# pylint: disable=missing-function-docstring
+# pylint: disable=line-too-long
+
+#import os, sys, inspect
+#currentdir = os.path.dirname(
+#    os.path.abspath(inspect.getfile(inspect.currentframe())))
+#parentdir = os.path.dirname(currentdir)
+#sys.path.insert(0, parentdir)
 
 import unittest
-from iterator import FSIterator, B64Iterator
-from image import Image
 import tempfile
 import os
+from iterator import FSIterator, B64Iterator
+from image import Image
+
 
 
 class TestColorModel(unittest.TestCase):
@@ -24,7 +30,7 @@ class TestColorModel(unittest.TestCase):
         im_one.save("construction.png")
         return dir_path
 
-    def test_FSterator(self):
+    def test_fsiterator(self):
         tmp_dir = self.prepare_temp_folder()
         iterator = FSIterator(tmp_dir, '.png')
         lst = []
@@ -33,7 +39,7 @@ class TestColorModel(unittest.TestCase):
         self.assertEqual(2, len(lst))
 
     #@unittest.skip("demonstrating skipping")
-    def test_B64Iterator_NoClass(self):
+    def test_b64iterator_noclass(self):
         iterator = B64Iterator([self.tile_construction, self.tile_runway])
         lst = []
         for i in iterator:
@@ -41,7 +47,7 @@ class TestColorModel(unittest.TestCase):
         self.assertEqual(2, len(lst))
 
     #@unittest.skip("demonstrating skipping")
-    def test_B64Iterator_WithClassName(self):
+    def test_b64iterator_withclassname(self):
         iterator = B64Iterator([self.tile_construction, self.tile_runway],
                                class_name='Postivie')
         lst = []
