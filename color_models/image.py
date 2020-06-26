@@ -1,3 +1,4 @@
+# pylint: disable=line-too-long
 """ Module provides an image abstraction
 """
 import io

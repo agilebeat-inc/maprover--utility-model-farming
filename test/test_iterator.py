@@ -12,8 +12,8 @@
 import unittest
 import tempfile
 import os
-from iterator import FSIterator, B64Iterator
-from image import Image
+from color_models import FSIterator, B64Iterator
+from color_models import Image
 
 
 
@@ -27,7 +27,6 @@ class TestColorModel(unittest.TestCase):
         im_two = Image.load_from_b64string(self.tile_runway)
         im_one.save(os.path.join(dir_path, "construction.png"))
         im_two.save(os.path.join(dir_path, "tile_runway.png"))
-        im_one.save("construction.png")
         return dir_path
 
     def test_fsiterator(self):
@@ -58,3 +57,4 @@ class TestColorModel(unittest.TestCase):
 
 if __name__ == '__main__' and __package__ is None:
     unittest.main()
+    
