@@ -93,7 +93,7 @@ Markdown==3.1.1
 MarkupSafe==1.1.1
 matplotlib==3.1.1
 mccabe==0.6.1
-mistune==0.8.4
+mistune==2.0.3
 mock==3.0.5
 more-itertools==8.0.2
 mpld3==0.3
